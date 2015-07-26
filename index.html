@@ -39,6 +39,11 @@
 			float: right;
 			padding: 20px;
 		}
+		#controls #chanel{
+			display: block;
+			width: 100%;
+			font-size: 24px;	
+		}
 	</style>
 </head>
 <body>
@@ -56,10 +61,20 @@
 				$("#msg").val("").focus();
 				return false;
 			});
+
+			$("#chanel").change(function(){
+				socket.emit("change channel", $("#channel").val());
+			});
+
 		});
 
 		socket.on("message", function(msg,id){
 			$("#message").append($("<li>").html("<strong>" + id +" : </strong>"+msg));
+		});
+
+		/*If you leave a chanel to choose other*/
+		socket.on("change channel", function(chanel){
+			$("#mssage").html("").append($("<li>").text("System: Bienvenido al canal " + chanel + "!"));
 		});
 
 	</script>
@@ -69,6 +84,10 @@
 	</ul>
 	<div id="controls">
 		<form action="">
+			<select name="chanel" id="chanel">
+				<option value="Chanel-a">Chanel A</option>
+				<option value="Chanel-b">Chanel B</option>
+			</select>
 			<input type="text" id="msg" placeholder="Escribe...">
 			<input type="submit" id="btn" value="Enviar">
 		</form>

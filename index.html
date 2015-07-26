@@ -1,26 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<title>CHat</title>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<style>
+		*{
+			padding: 0;
+			margin: 0;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		body{
+			font-family: Verdana;
+		}
+		ul{
+			list-style-type: none;
+			padding: 20px;
+			background: #000;
+			color: #fff;
+		}
+		#controls{
+			position: absolute;
+			bottom: 0px;
+			left: 0px;
+			border: #333 2px solid;
+			width: 100%;
+		}
+		#controls #msg{
+			display: block;
+			padding: 20px;
+			float: left;
+			width: 93%;
+			font-size: 18pt;
+		}
+		#controls #btn{
+			float: right;
+			padding: 20px;
+		}
+	</style>
 </head>
 <body>
-	<div class="container">
-		<div>
-			
-		</div>
-		<div>
-			<form action="">
-				<div class="form-group">
-					<input type="text" class="form-control" placeholder="Escribe el mensaje aqui...">
-				</div>
-				<div class="form-group">
-					<input type="submit" class="btn btn-default">
-				</div>
-			</form>
-		</div>
+	<script type="text/javascript">
+		//Connect just instantiating the library.
+		var socket = io();
+
+		$(function(){
+			$("form").submit(function(){
+				var message = $("#msg").val();
+				if (message=="") return false;
+
+				//Event message on nodejs server
+				socket.emit("message", message);
+				$("#msg").val("").focus();
+				return false;
+			});
+		});
+
+		socket.on("message", function(msg,id){
+			$("#message").append($("<li>").html("<strong>" + id +" : </strong>"+msg));
+		});
+
+	</script>
+
+	<ul id="message">
+		
+	</ul>
+	<div id="controls">
+		<form action="">
+			<input type="text" id="msg" placeholder="Escribe...">
+			<input type="submit" id="btn" value="Enviar">
+		</form>
 	</div>
 </body>
 </html>
